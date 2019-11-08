@@ -21,11 +21,12 @@ type InsuranceCC struct {
 
 // validate creator's identity, only insurance user is allowed
 func (t InsuranceCC) verifyCreatorIdentity(expectedCert []byte) {
-	creatorCert := cid.NewClientIdentity(t.CCAPI).CertificatePem
-
-	if string(creatorCert) == string(expectedCert) {
-		t.Logger.Error("creator", string(creatorCert))
-		t.Logger.Error("expectedCert", string(expectedCert))
+	var creatorCert = cid.NewClientIdentity(t.CCAPI).CertificatePem
+	var cStr = string(creatorCert)
+	var eStr = string(expectedCert)
+	if cStr != eStr {
+		t.Logger.Error("creator", cStr)
+		t.Logger.Error("expectedCert", eStr)
 		PanicString("tx creator's identity is not as expected")
 	}
 
@@ -152,7 +153,7 @@ func (t InsuranceCC) getMemberData(memberID string) []byte {
 	var data memberData
 
 	var exist = t.GetPrivateObj(collectionMember, memberID, &data)
-	if ! exist {
+	if !exist {
 		return nil
 	} else {
 		return ToJson(data)
