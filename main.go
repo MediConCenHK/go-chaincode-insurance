@@ -7,7 +7,6 @@ import (
 	. "github.com/davidkhala/goutils"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/hyperledger/fabric/protos/peer"
-	"strings"
 )
 
 const (
@@ -25,9 +24,11 @@ func (t InsuranceCC) verifyCreatorIdentity(expectedCert []byte) {
 	var creatorCert = cid.NewClientIdentity(t.CCAPI).CertificatePem
 	var cStr = string(creatorCert)
 	var eStr = string(expectedCert)
-	if strings.Compare(cStr, eStr) != 0 { // This is specially designed for dianrong web-based params input
-		t.Logger.Error("creator", cStr)
-		t.Logger.Error("expectedCert", eStr)
+	if cStr != eStr { // TODO why strings.Compare work
+		t.Logger.Error("creator", len(creatorCert), cStr)
+		t.Logger.Error("expectedCert", len(expectedCert), eStr)
+		t.Logger.Error(creatorCert)
+		t.Logger.Error(expectedCert)
 		PanicString("tx creator's identity is not as expected")
 	}
 
